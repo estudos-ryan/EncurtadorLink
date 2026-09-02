@@ -1,5 +1,6 @@
 {
   "name": "encurtador",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "5.2.1"
+    "crypto-js": "^4.2.0",
+    "express": "5.2.1",
+    "express-rate-limit": "^8.7.0"
   }
 }
