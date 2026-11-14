@@ -2,9 +2,9 @@
 
 Um projeto prático desenvolvido em **Node.js** para entender os fundamentos de como sistemas de encurtamento de URLs (como o Bitly) funcionam por baixo
 
-## Demostração (Versão 1)
+## Demostração
 
-![Demostração](thumbnail.png)
+![Demostração](image.png)
 
 ## Alfabeto Base62
 
@@ -25,27 +25,25 @@ Um projeto prático desenvolvido em **Node.js** para entender os fundamentos de 
 
 ## Como testar localmente na sua máquina
 
-1. Certifique-se de ter o [Node.js](https://nodejs.org/) instalado.
-2. Clone esse repositório
+1. Clone esse repositório
 
 ```bash
 git clone https://github.com/estudos-ryan/LocalTempMail.git
 ```
 
-3. Abra o projeto dentro da pasta do projeto e instale o Express:
+2. Abra o projeto dentro da pasta do projeto e instale as dependências
 
 ```bash
 npm i
 ```
 
-2. Inicie o servidor:
+3. Inicie o servidor:
 
 ```bash
 node ./api/server.js
 ```
 
-3. Acesse no seu navegador o endereço: `http://localhost:3000`
-
+4. Acesse no seu navegador o endereço: `http://localhost:3000`
 
 ## Entendendo a Matemática (Por que Base62?)
 
@@ -60,7 +58,7 @@ Em vez de sortear letras aleatórias, o sistema salva a URL longa no banco de da
 
 ## Atualização
 
-- 🔗 Validação de URL aprimorada.
-- 🔐 Adicionado `crypto-js` para geração aleatória das URLs.
-- 🛡️ Adicionado `express-rate-limit` para limitar abusos na API por IP, permitindo a criação de até **20 URLs**.
-- ⏱️ Adicionada seleção de tempo de expiração da URL, com limite de até **24 horas**.
+* Validação de URL aprimorada.
+* Adicionado `crypto-js` para geração aleatória das URLs.
+* Adicionado `express-rate-limit` para limitar abusos na API por IP, permitindo a criação de até **20 URLs**.
+* Adicionada seleção de tempo de expiração da URL, com limite de até **24 horas**.

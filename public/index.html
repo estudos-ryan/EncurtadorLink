@@ -3,58 +3,89 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encurtador De Link</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="container">
-        <h1>Encurtador de Links <span style="font-size: 16px">Base62</span></h1>
-        <p>Gerar link encurtado até 24h</p>
+        <h1>Encurtador de Links <span class="badge">Base62</span></h1>
+        <p class="subtitulo">Gerar link encurtado temporário (máx. 24h)</p>
 
-        <div>
-            <label for="duracao">Duração do link:</label>
+        <form id="formEncurtar">
+            <div class="campo-tempo">
+                <label for="duracaoValor">Duração do link:</label>
+                <input type="number" id="duracaoValor" min="1" max="24" value="24" required>
 
-            <select id="duracao">
-                <option value="60000">1 minuto</option>
-                <option value="300000">5 minutos</option>
-                <option value="900000">15 minutos</option>
-                <option value="1800000" selected>30 minutos</option>
-                <option value="3600000">1 hora</option>
-                <option value="21600000">6 horas</option>
-                <option value="43200000">12 horas</option>
-                <option value="86400000">24 horas</option>
-            </select>
-        </div>
+                <select id="duracaoUnidade">
+                    <option value="minutos">Minuto(s)</option>
+                    <option value="horas" selected>Hora(s)</option>
+                </select>
+            </div>
 
-        <div>
-            <input type="url" id="urlInput" placeholder="Cole sua URL aqui">
-            <button onclick="encurtar()">Encurtar</button>
-        </div>
+            <div class="campo-url">
+                <input type="url" id="urlInput" placeholder="https://exemplo.com/sua-url" required>
+                <button type="submit" id="btnEncurtar">Encurtar</button>
+            </div>
+        </form>
 
-        <div id="resultado"></div>
+        <div id="resultado" class="oculto"></div>
     </div>
 
     <script>
-        async function encurtar() {
-            const duracao = Number(document.getElementById("duracao").value)
-            const url = document.getElementById("urlInput").value;
-            if (!url) return alert("Digite uma URL válida!");
+        const form = document.getElementById("formEncurtar");
+        const duracaoValor = document.getElementById("duracaoValor");
+        const duracaoUnidade = document.getElementById("duracaoUnidade");
+        const urlInput = document.getElementById("urlInput");
+        const resultadoDiv = document.getElementById("resultado");
+
+        duracaoUnidade.addEventListener("change", () => {
+            if (duracaoUnidade.value === "horas") {
+                duracaoValor.max = 24;
+                if (Number(duracaoValor.value) > 24) duracaoValor.value = 24;
+            } else {
+                duracaoValor.max = 1440;
+            }
+        });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const url = urlInput.value.trim();
+            const valor = Number(duracaoValor.value);
+            const unidade = duracaoUnidade.value;
+
+            const tempoEmHoras = unidade === "minutos" ? valor / 60 : valor;
+
+            resultadoDiv.className = "oculto";
 
             try {
-                const resposta = await fetch("/encurtar", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ url, duracao })
-                });
-
+                const query = `/encurta?url=${encodeURIComponent(url)}&tempo=${tempoEmHoras}`;
+                const resposta = await fetch(query);
                 const dados = await resposta.json();
-                const div = document.getElementById("resultado");
-                div.innerHTML = `Seu link: <a href="${dados.urlCurta}" target="_blank">${dados.urlCurta}</a>`;
-            } catch (e) {
-                alert("Erro de conexão.");
+
+                if (!resposta.ok) {
+                    throw new Error(dados.erro || "Erro ao encurtar link.");
+                }
+
+                resultadoDiv.innerHTML = `
+                    <span>Link gerado:</span>
+                    <div class="link-box">
+                        <a href="${dados.link_gerado}" target="_blank" rel="noopener">${dados.link_gerado}</a>
+                        <button type="button" id="btnCopiar">Copiar</button>
+                    </div>
+                `;
+
+                document.getElementById("btnCopiar").addEventListener("click", async (ev) => {
+                    await navigator.clipboard.writeText(dados.link_gerado);
+                    ev.target.textContent = "Copiado!";
+                    setTimeout(() => (ev.target.textContent = "Copiar"), 2000);
+                });
+            } catch (erro) {
+                console.error(erro.message)
             }
-        }
+        });
     </script>
 </body>
 

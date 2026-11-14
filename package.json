@@ -1,5 +1,5 @@
 {
-  "name": "encurtador",
+  "name": "Encurtador",
   "type": "module",
   "version": "1.0.0",
   "description": "",
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vercel/blob": "^2.9.0",
     "crypto-js": "^4.2.0",
     "express": "5.2.1",
     "express-rate-limit": "^8.7.0"
